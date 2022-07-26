@@ -31,6 +31,7 @@ namespace C2M.utils
 
 		public static void PressKeyCombination(string combo)
 		{
+			// TODO: complete and clean this class up
 			foreach (string ikey in combo.Replace(" ", "").Split("+"))
 			{
 				string key = ikey.Replace("+", "");
