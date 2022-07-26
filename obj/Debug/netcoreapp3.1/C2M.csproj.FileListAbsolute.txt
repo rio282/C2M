@@ -1,0 +1,17 @@
+C:\Users\rbere\Desktop\Programming\Local\Software\C2M\bin\Debug\netcoreapp3.1\C2M.exe
+C:\Users\rbere\Desktop\Programming\Local\Software\C2M\bin\Debug\netcoreapp3.1\C2M.deps.json
+C:\Users\rbere\Desktop\Programming\Local\Software\C2M\bin\Debug\netcoreapp3.1\C2M.runtimeconfig.json
+C:\Users\rbere\Desktop\Programming\Local\Software\C2M\bin\Debug\netcoreapp3.1\C2M.runtimeconfig.dev.json
+C:\Users\rbere\Desktop\Programming\Local\Software\C2M\bin\Debug\netcoreapp3.1\C2M.dll
+C:\Users\rbere\Desktop\Programming\Local\Software\C2M\bin\Debug\netcoreapp3.1\C2M.pdb
+C:\Users\rbere\Desktop\Programming\Local\Software\C2M\bin\Debug\netcoreapp3.1\WindowsInput.dll
+C:\Users\rbere\Desktop\Programming\Local\Software\C2M\bin\Debug\netcoreapp3.1\SharpDX.dll
+C:\Users\rbere\Desktop\Programming\Local\Software\C2M\bin\Debug\netcoreapp3.1\SharpDX.XInput.dll
+C:\Users\rbere\Desktop\Programming\Local\Software\C2M\obj\Debug\netcoreapp3.1\C2M.csprojAssemblyReference.cache
+C:\Users\rbere\Desktop\Programming\Local\Software\C2M\obj\Debug\netcoreapp3.1\C2M.AssemblyInfoInputs.cache
+C:\Users\rbere\Desktop\Programming\Local\Software\C2M\obj\Debug\netcoreapp3.1\C2M.AssemblyInfo.cs
+C:\Users\rbere\Desktop\Programming\Local\Software\C2M\obj\Debug\netcoreapp3.1\C2M.csproj.CoreCompileInputs.cache
+C:\Users\rbere\Desktop\Programming\Local\Software\C2M\obj\Debug\netcoreapp3.1\C2M.csproj.CopyComplete
+C:\Users\rbere\Desktop\Programming\Local\Software\C2M\obj\Debug\netcoreapp3.1\C2M.dll
+C:\Users\rbere\Desktop\Programming\Local\Software\C2M\obj\Debug\netcoreapp3.1\C2M.pdb
+C:\Users\rbere\Desktop\Programming\Local\Software\C2M\obj\Debug\netcoreapp3.1\C2M.genruntimeconfig.cache

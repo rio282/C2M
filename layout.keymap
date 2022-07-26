@@ -1,0 +1,7 @@
+A = LeftClick
+B = Back
+X = RightClick
+Y = None
+LeftThumb = Movement
+RightThumb = Scroll
+HomeButton = Exit
