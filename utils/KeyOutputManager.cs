@@ -23,15 +23,18 @@ namespace C2M.utils
 				s.Keyboard.KeyPress(Utilities.ParseEnum<VirtualKeyCode>($"VK_{key}"));
 		}
 
-		public static void PressKeyByCode()
+		public static void PressKeyByCode(int keycode)
 		{
-
+			InputSimulator s = new InputSimulator();
+			s.Keyboard.KeyPress((VirtualKeyCode)keycode);
 		}
 
 		public static void PressKeyCombination(string combo)
 		{
-			foreach (string key in combo.Replace(" ", "").Split("+"))
+			foreach (string ikey in combo.Replace(" ", "").Split("+"))
 			{
+				string key = ikey.Replace("+", "");
+
 				Console.WriteLine(key);
 			}
 		}

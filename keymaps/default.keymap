@@ -2,6 +2,21 @@ A = LeftClick
 B = Back
 X = RightClick
 Y = None
+
 LeftThumb = Movement
 RightThumb = Scroll
 HomeButton = Exit
+
+DPadLeft = MoveCaretLeft
+DPadRight = MoveCaretRight
+DPadUp = None
+DPadDown = None
+
+Start = None
+Back = None
+
+LeftShoulder = None
+RightShoulder = None
+
+LeftTrigger = None
+RightTrigger = None

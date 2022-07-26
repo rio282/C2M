@@ -3,6 +3,7 @@ using SharpDX.XInput;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -74,6 +75,7 @@ namespace C2M
 
 				try
 				{
+					// check if button exists
 					GamepadButtonFlags gamepadButton = Utilities.ParseEnum<GamepadButtonFlags>(input);
 					keymap[gamepadButton] = action switch
 					{
@@ -107,26 +109,40 @@ namespace C2M
 
 		internal void Handle(State state)
 		{
+			// handle generic stuff
 			Move(state);
 			Scroll(state);
+			HandleTriggers(state);
+
+			// hot AF key inputs and that
 			foreach (KeyValuePair<GamepadButtonFlags, Task> input in keymap)
 			{
+				// check if key is valid
 				bool isKeyDown = state.Gamepad.Buttons.HasFlag(input.Key);
+
 				if (isKeyDown && !lastKeysDown.Contains(input.Key))
 				{
 					lastKeysDown.Add(input.Key);
+
+					// normal operations
 					if (input.Key == GamepadButtonFlags.A) mouse.LeftButtonDown();
 					else if (input.Key == GamepadButtonFlags.B) KeyOutputManager.PressKey("escape");
 					else if (input.Key == GamepadButtonFlags.X) mouse.RightButtonClick();
 					else if (input.Key == GamepadButtonFlags.Y) KeyOutputManager.OpenOnScreenKeyboard();
 
+					// movement arraows
+					else if (input.Key == GamepadButtonFlags.DPadLeft) KeyOutputManager.PressKey("left");
+					else if (input.Key == GamepadButtonFlags.DPadRight) KeyOutputManager.PressKey("right");
+					else if (input.Key == GamepadButtonFlags.DPadUp) KeyOutputManager.PressKey("up");
+					else if (input.Key == GamepadButtonFlags.DPadDown) KeyOutputManager.PressKey("down");
 
-					// wtf why does dpad not work
-					else if (input.Key == GamepadButtonFlags.DPadLeft) mouse.MoveMouseBy(-5, 0);
-					else if (input.Key == GamepadButtonFlags.DPadRight) mouse.MoveMouseBy(5, 0);
+					// idk lol || ctrl and shift?
+					// else if (input.Key == GamepadButtonFlags.LeftShoulder) KeyOutputManager.PressKeyCombination("ctrl+-");
+					// else if (input.Key == GamepadButtonFlags.RightShoulder) KeyOutputManager.PressKeyCombination("ctrl+=");
 
-
-					// todo: zoom with triggers
+					// volume
+					else if (input.Key == GamepadButtonFlags.Back) SoundManager.VolumeDown();
+					else if (input.Key == GamepadButtonFlags.Start) SoundManager.VolumeUp();
 				}
 				else if (!isKeyDown && lastKeysDown.Contains(input.Key))
 				{
@@ -134,6 +150,15 @@ namespace C2M
 					lastKeysDown.Remove(input.Key);
 				}
 			}
+		}
+
+		private void HandleTriggers(State state)
+		{
+			if (state.Gamepad.LeftTrigger > Gamepad.TriggerThreshold)
+				KeyOutputManager.PressKeyCombination("ctrl+-");
+
+			if (state.Gamepad.RightTrigger > Gamepad.TriggerThreshold)
+				KeyOutputManager.PressKeyCombination("ctrl+=");
 		}
 	}
 }
