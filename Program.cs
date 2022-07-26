@@ -11,6 +11,7 @@ namespace C2M
 
 		static void Main(string[] args)
 		{
+			Console.Title = "C2M (Not Connected.)";
 			C2M c2m = new C2M();
 			c2m.Start();
 		}

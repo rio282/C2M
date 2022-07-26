@@ -23,8 +23,12 @@ namespace C2M
 
 		private void Update()
 		{
-			if (!controller.IsConnected)
+			if (!controller.IsConnected) 
+			{
+				Console.Title = "C2M (Not Connected.)";
 				return;
+			}
+			Console.Title = "C2M (Connected.)";
 
 			controller.GetState(out var state);
 			buttonHandler.Handle(state);
