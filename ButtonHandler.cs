@@ -50,8 +50,10 @@ namespace C2M
 			if (!File.Exists(fullFilePath))
 			{
 				Console.Write("Keymap file doesn't exist.");
-				Console.Read();
-				Environment.Exit(1);
+				//Console.Read();
+
+				return;
+				//Environment.Exit(1);
 			}
 			Console.WriteLine("Found keymap file!");
 
