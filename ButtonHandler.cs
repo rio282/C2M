@@ -53,7 +53,7 @@ namespace C2M
 				Console.Read();
 				Environment.Exit(1);
 			}
-			Console.Write("Found keymap file!");
+			Console.WriteLine("Found keymap file!");
 
 			using var fileStream = File.OpenRead(fullFilePath);
 			using var streamReader = new StreamReader(fileStream, Encoding.UTF8, true, BufferSize);
@@ -74,8 +74,7 @@ namespace C2M
 					GamepadButtonFlags gamepadButton = Program.ParseEnum<GamepadButtonFlags>(input);
 					keymap[gamepadButton] = action switch
 					{
-						nameof(Actions.LeftClick) => Task.Factory.StartNew(() => mouse.LeftButtonClick(), CancellationToken.None, TaskCreationOptions.None, ts),
-						nameof(Actions.RightClick) => Task.Factory.StartNew(() => mouse.RightButtonClick(), CancellationToken.None, TaskCreationOptions.None, ts),
+						// nameof(Actions.LeftClick) => TASK
 						_ => null,
 					};
 				}
@@ -100,7 +99,7 @@ namespace C2M
 			var y = state.Gamepad.RightThumbY / CTScrollDivisionRate;
 
 			mouse.HorizontalScroll(x);
-			mouse.VerticalScroll(y);
+			mouse.VerticalScroll(y >> 1);
 		}
 
 
@@ -112,9 +111,23 @@ namespace C2M
 			{
 				bool isKeyDown = state.Gamepad.Buttons.HasFlag(input.Key);
 				if (isKeyDown && !lastKeysDown.Contains(input.Key))
-					input.Value.Start(); // exec action bound to keymap
-				else
+				{
+					lastKeysDown.Add(input.Key);
+					if (input.Key == GamepadButtonFlags.A) mouse.LeftButtonClick();
+					else if (input.Key == GamepadButtonFlags.X) mouse.RightButtonClick();
+					// else if (input.Key == GamepadButtonFlags.B) ;
+
+					// wtf why does dpad not work
+					else if (input.Key == GamepadButtonFlags.DPadLeft) mouse.MoveMouseBy(-5, 0);
+					else if (input.Key == GamepadButtonFlags.DPadRight) mouse.MoveMouseBy(5, 0);
+
+
+					// todo: zoom with triggers
+                }
+				else if (!isKeyDown && lastKeysDown.Contains(input.Key))
+                {
 					lastKeysDown.Remove(input.Key);
+				}
 			}
 		}
 	}
