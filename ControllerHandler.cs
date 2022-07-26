@@ -152,13 +152,20 @@ namespace C2M
 			}
 		}
 
+		private ushort counter = 0;
 		private void HandleTriggers(State state)
 		{
-			if (state.Gamepad.LeftTrigger > Gamepad.TriggerThreshold)
-				KeyOutputManager.PressKeyCombination("ctrl+-");
+			counter++;
+			if (counter <= 5)
+				return;
 
-			if (state.Gamepad.RightTrigger > Gamepad.TriggerThreshold)
-				KeyOutputManager.PressKeyCombination("ctrl+=");
+			if (state.Gamepad.LeftTrigger > Gamepad.TriggerThreshold && state.Gamepad.RightTrigger <= Gamepad.TriggerThreshold)
+				KeyOutputManager.PressKeyCombination("control+subtract");
+
+			else if (state.Gamepad.RightTrigger > Gamepad.TriggerThreshold && state.Gamepad.LeftTrigger <= Gamepad.TriggerThreshold)
+				KeyOutputManager.PressKeyCombination("control+add");
+
+			counter = 0;
 		}
 	}
 }

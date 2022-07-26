@@ -10,7 +10,7 @@ namespace C2M.utils
 
 		public static bool IsKeyInputAllowed()
 		{
-
+			// TODO: MAYBE implement this later
 			return false;
 		}
 

@@ -17,10 +17,10 @@ namespace C2M.utils
 		public static void PressKey(string key)
 		{
 			InputSimulator s = new InputSimulator();
-			if (key.Length > 1 && !int.TryParse(key, out _))
-				s.Keyboard.KeyPress(Utilities.ParseEnum<VirtualKeyCode>(key));
-			else
-				s.Keyboard.KeyPress(Utilities.ParseEnum<VirtualKeyCode>($"VK_{key}"));
+			
+			if (key.Length == 1 && !int.TryParse(key, out _))
+				key = $"VK_{key}";
+			s.Keyboard.KeyPress(Utilities.ParseEnum<VirtualKeyCode>(key));
 		}
 
 		public static void PressKeyByCode(int keycode)
@@ -31,17 +31,34 @@ namespace C2M.utils
 
 		public static void PressKeyCombination(string combo)
 		{
-			// TODO: complete and clean this class up
-			foreach (string ikey in combo.Replace(" ", "").Split("+"))
-			{
-				string key = ikey.Replace("+", "");
+			InputSimulator s = new InputSimulator();
 
-				Console.WriteLine(key);
+			// make array
+			string[] keys = combo.Replace(" ", "").Split("+");
+			// execute key down
+			foreach (string key_str in keys) 
+			{
+				string key = key_str;
+				if (key.Length == 1 && !int.TryParse(key, out _))
+					key = $"VK_{key}";
+				s.Keyboard.KeyDown(Utilities.ParseEnum<VirtualKeyCode>(key));
+			}
+
+			// reverse array
+			Array.Reverse(keys);
+			// execute key up
+			foreach (string key_str in keys)
+			{
+				string key = key_str;
+				if (key.Length == 1 && !int.TryParse(key, out _))
+					key = $"VK_{key}";
+				s.Keyboard.KeyUp(Utilities.ParseEnum<VirtualKeyCode>(key));
 			}
 		}
 
 		public static void OpenOnScreenKeyboard()
 		{
+			// WARNING: this is SLOOOOWWW (not because of me, but because of osk.exe)
 			const string progFiles = @"C:\Program Files\Common Files\Microsoft Shared\ink";
 			string onScreenKeyboardPath = Path.Combine(progFiles, "TabTip.exe");
 
@@ -49,7 +66,6 @@ namespace C2M.utils
 			process.StartInfo.UseShellExecute = true;
 			process.StartInfo.FileName = onScreenKeyboardPath;
 			process.Start();
-
 		}
 	}
 }
