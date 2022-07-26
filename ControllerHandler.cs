@@ -1,4 +1,5 @@
-﻿using SharpDX.XInput;
+﻿using C2M.utils;
+using SharpDX.XInput;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -9,10 +10,10 @@ using WindowsInput;
 
 namespace C2M
 {
-	internal class ButtonHandler
+	internal class ControllerHandler
 	{
-		private const string KeymapFolder = @"C:\Users\rbere\Desktop\Programming\Local\Software\C2M\";
-		private const string KeymapFile = "layout.keymap";
+		private const string KeymapFolder = @"C:\Users\rbere\Desktop\Programming\Local\Software\C2M\keymaps\";
+		private const string KeymapFile = "default.keymap";
 
 		private readonly C2M c2m;
 		private readonly IMouseSimulator mouse;
@@ -26,7 +27,7 @@ namespace C2M
 		private IDictionary<GamepadButtonFlags, Task> keymap;
 		private List<GamepadButtonFlags> lastKeysDown;
 
-		public ButtonHandler(C2M c2m, Controller controller, IMouseSimulator mouse)
+		public ControllerHandler(C2M c2m, Controller controller, IMouseSimulator mouse)
 		{
 			this.c2m = c2m;
 			this.controller = controller;
@@ -35,7 +36,7 @@ namespace C2M
 			// create task scheduler
 			SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
 			ts = TaskScheduler.FromCurrentSynchronizationContext();
-			
+
 			lastKeysDown = new List<GamepadButtonFlags>();
 			LoadKeymap();
 		}
@@ -49,7 +50,7 @@ namespace C2M
 			const Int32 BufferSize = 128;
 			if (!File.Exists(fullFilePath))
 			{
-				Console.Write("Keymap file doesn't exist.");
+				Console.WriteLine("Keymap file doesn't exist.");
 				//Console.Read();
 
 				return;
@@ -73,7 +74,7 @@ namespace C2M
 
 				try
 				{
-					GamepadButtonFlags gamepadButton = Program.ParseEnum<GamepadButtonFlags>(input);
+					GamepadButtonFlags gamepadButton = Utilities.ParseEnum<GamepadButtonFlags>(input);
 					keymap[gamepadButton] = action switch
 					{
 						// nameof(Actions.LeftClick) => TASK
@@ -104,7 +105,6 @@ namespace C2M
 			mouse.VerticalScroll(y >> 1);
 		}
 
-
 		internal void Handle(State state)
 		{
 			Move(state);
@@ -115,9 +115,11 @@ namespace C2M
 				if (isKeyDown && !lastKeysDown.Contains(input.Key))
 				{
 					lastKeysDown.Add(input.Key);
-					if (input.Key == GamepadButtonFlags.A) mouse.LeftButtonClick();
+					if (input.Key == GamepadButtonFlags.A) mouse.LeftButtonDown();
+					else if (input.Key == GamepadButtonFlags.B) KeyOutputManager.PressKey("escape");
 					else if (input.Key == GamepadButtonFlags.X) mouse.RightButtonClick();
-					// else if (input.Key == GamepadButtonFlags.B) ;
+					else if (input.Key == GamepadButtonFlags.Y) KeyOutputManager.OpenOnScreenKeyboard();
+
 
 					// wtf why does dpad not work
 					else if (input.Key == GamepadButtonFlags.DPadLeft) mouse.MoveMouseBy(-5, 0);
@@ -125,9 +127,10 @@ namespace C2M
 
 
 					// todo: zoom with triggers
-                }
+				}
 				else if (!isKeyDown && lastKeysDown.Contains(input.Key))
-                {
+				{
+					mouse.LeftButtonUp();
 					lastKeysDown.Remove(input.Key);
 				}
 			}
