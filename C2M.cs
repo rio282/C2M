@@ -45,6 +45,7 @@ namespace C2M
 			Console.WriteLine("Keep this window open.");
 			Console.WriteLine("Running...");
 			Console.Read();
+			Stop();
 		}
 
 		public void Stop()

@@ -136,8 +136,8 @@ namespace C2M
 					else if (input.Key == GamepadButtonFlags.DPadUp) KeyOutputManager.PressKey("up");
 					else if (input.Key == GamepadButtonFlags.DPadDown) KeyOutputManager.PressKey("down");
 
-					// idk lol || ctrl and shift?
-					// else if (input.Key == GamepadButtonFlags.LeftShoulder) KeyOutputManager.PressKeyCombination("ctrl+-");
+					// idk lol
+					// else if (input.Key == GamepadButtonFlags.LeftShoulder) KeyOutputManager.PressKey("control");
 					// else if (input.Key == GamepadButtonFlags.RightShoulder) KeyOutputManager.PressKeyCombination("ctrl+=");
 
 					// volume
