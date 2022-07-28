@@ -3,7 +3,6 @@ using SharpDX.XInput;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -19,7 +18,7 @@ namespace C2M
 		private readonly C2M c2m;
 		private readonly IMouseSimulator mouse;
 		private readonly Controller controller;
-
+		private readonly KeyOutputManager keyOutputManager;
 
 		private const int CTMovementDivisionRate = 2_000;
 		private const int CTScrollDivisionRate = 10_000;
@@ -35,6 +34,7 @@ namespace C2M
 			this.c2m = c2m;
 			this.controller = controller;
 			this.mouse = mouse;
+			keyOutputManager = new KeyOutputManager();
 
 			// create task scheduler
 			SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
@@ -84,17 +84,17 @@ namespace C2M
 						Actions.LeftClick => () => mouse.LeftButtonDown(),
 						Actions.RightClick => () => mouse.RightButtonClick(),
 
-						Actions.Left => () => KeyOutputManager.PressKey("left"),
-						Actions.Right => () => KeyOutputManager.PressKey("right"),
-						Actions.Up => () => KeyOutputManager.PressKey("up"),
-						Actions.Down => () => KeyOutputManager.PressKey("down"),
+						Actions.Left => () => keyOutputManager.PressKey("left"),
+						Actions.Right => () => keyOutputManager.PressKey("right"),
+						Actions.Up => () => keyOutputManager.PressKey("up"),
+						Actions.Down => () => keyOutputManager.PressKey("down"),
 
-						Actions.Back => () => KeyOutputManager.PressKey("escape"),
+						Actions.Back => () => keyOutputManager.PressKey("escape"),
 
 						Actions.VolumeUp => () => SoundManager.VolumeUp(),
 						Actions.VolumeDown => () => SoundManager.VolumeDown(),
 
-						Actions.OpenOSK => () => KeyOutputManager.OpenOnScreenKeyboard(),
+						Actions.OpenOSK => () => keyOutputManager.OpenOnScreenKeyboard(),
 
 						Actions.None => null,
 						_ => null
@@ -131,8 +131,6 @@ namespace C2M
 			// handle generic stuff
 			Move(state);
 			Scroll(state);
-				
-			// every so many frames
 			if (framecounter % 5 == 0)
             {
 				HandleTriggers(state);
@@ -153,8 +151,8 @@ namespace C2M
                 }
 				else if (!isKeyDown && lastKeysDown.Contains(input))
 				{
-					mouse.LeftButtonUp();
 					lastKeysDown.Remove(input);
+					mouse.LeftButtonUp();
 				}
 			}
 
@@ -164,10 +162,10 @@ namespace C2M
 		private void HandleTriggers(State state)
 		{
 			if (state.Gamepad.LeftTrigger > Gamepad.TriggerThreshold && state.Gamepad.RightTrigger <= Gamepad.TriggerThreshold)
-				KeyOutputManager.PressKeyCombination("control+subtract");
+				keyOutputManager.PressKeyCombination("control+subtract");
 
 			else if (state.Gamepad.RightTrigger > Gamepad.TriggerThreshold && state.Gamepad.LeftTrigger <= Gamepad.TriggerThreshold)
-				KeyOutputManager.PressKeyCombination("control+add");
+				keyOutputManager.PressKeyCombination("control+add");
 		}
 	}
 }

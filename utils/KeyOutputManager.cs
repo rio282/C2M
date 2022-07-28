@@ -9,30 +9,28 @@ namespace C2M.utils
 {
 	class KeyOutputManager
 	{
+
+		private readonly InputSimulator inputSimulator;
+
 		public KeyOutputManager()
 		{
-
+			inputSimulator = new InputSimulator();
 		}
 
-		public static void PressKey(string key)
+		public void PressKey(string key)
 		{
-			InputSimulator s = new InputSimulator();
-			
 			if (key.Length == 1 && !int.TryParse(key, out _))
 				key = $"VK_{key}";
-			s.Keyboard.KeyPress(Utilities.ParseEnum<VirtualKeyCode>(key));
+			inputSimulator.Keyboard.KeyPress(Utilities.ParseEnum<VirtualKeyCode>(key));
 		}
 
-		public static void PressKeyByCode(int keycode)
+		public void PressKeyByCode(int keycode)
 		{
-			InputSimulator s = new InputSimulator();
-			s.Keyboard.KeyPress((VirtualKeyCode)keycode);
+			inputSimulator.Keyboard.KeyPress((VirtualKeyCode)keycode);
 		}
 
-		public static void PressKeyCombination(string combo)
+		public void PressKeyCombination(string combo)
 		{
-			InputSimulator s = new InputSimulator();
-
 			// make array
 			string[] keys = combo.Replace(" ", "").Split("+");
 			// execute key down
@@ -41,7 +39,7 @@ namespace C2M.utils
 				string key = key_str;
 				if (key.Length == 1 && !int.TryParse(key, out _))
 					key = $"VK_{key}";
-				s.Keyboard.KeyDown(Utilities.ParseEnum<VirtualKeyCode>(key));
+				inputSimulator.Keyboard.KeyDown(Utilities.ParseEnum<VirtualKeyCode>(key));
 			}
 
 			// reverse array
@@ -52,11 +50,11 @@ namespace C2M.utils
 				string key = key_str;
 				if (key.Length == 1 && !int.TryParse(key, out _))
 					key = $"VK_{key}";
-				s.Keyboard.KeyUp(Utilities.ParseEnum<VirtualKeyCode>(key));
+				inputSimulator.Keyboard.KeyUp(Utilities.ParseEnum<VirtualKeyCode>(key));
 			}
 		}
 
-		public static void OpenOnScreenKeyboard()
+		public void OpenOnScreenKeyboard()
 		{
 			// WARNING: this is SLOOOOWWW (not because of me, but because of osk.exe)
 			const string progFiles = @"C:\Program Files\Common Files\Microsoft Shared\ink";
