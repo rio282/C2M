@@ -12,7 +12,7 @@ namespace C2M
 {
 	internal class ControllerHandler
 	{
-		private const string KeymapFolder = @"C:\Users\rbere\Desktop\Programming\Local\Software\C2M\keymaps\";
+		private const string KeymapFolder = @"..\..\..\keymaps\";
 		private const string KeymapFile = "default.keymap";
 
 		private readonly C2M c2m;
