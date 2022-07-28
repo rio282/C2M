@@ -25,8 +25,10 @@ namespace C2M
 		private const int CTScrollDivisionRate = 10_000;
 
 		private readonly TaskScheduler ts;
-		private IDictionary<GamepadButtonFlags, Task> keymap;
+		private IDictionary<GamepadButtonFlags, Action> keymap;
 		private List<GamepadButtonFlags> lastKeysDown;
+
+		private ushort framecounter = 0;
 
 		public ControllerHandler(C2M c2m, Controller controller, IMouseSimulator mouse)
 		{
@@ -44,7 +46,7 @@ namespace C2M
 
 		private void LoadKeymap()
 		{
-			keymap = new Dictionary<GamepadButtonFlags, Task>();
+			keymap = new Dictionary<GamepadButtonFlags, Action>();
 
 			// file reader settings
 			string fullFilePath = Path.Combine(KeymapFolder, KeymapFile);
@@ -52,10 +54,9 @@ namespace C2M
 			if (!File.Exists(fullFilePath))
 			{
 				Console.WriteLine("Keymap file doesn't exist.");
-				//Console.Read();
+				Console.Read();
 
-				return;
-				//Environment.Exit(1);
+				Environment.Exit(1);
 			}
 			Console.WriteLine("Found keymap file!");
 
@@ -77,11 +78,29 @@ namespace C2M
 				{
 					// check if button exists
 					GamepadButtonFlags gamepadButton = Utilities.ParseEnum<GamepadButtonFlags>(input);
-					keymap[gamepadButton] = action switch
+					// assign correct action
+					Action assignedAction = Utilities.ParseEnum<Actions>(action) switch
 					{
-						// nameof(Actions.LeftClick) => TASK
-						_ => null,
+						Actions.LeftClick => () => mouse.LeftButtonDown(),
+						Actions.RightClick => () => mouse.RightButtonClick(),
+
+						Actions.Left => () => KeyOutputManager.PressKey("left"),
+						Actions.Right => () => KeyOutputManager.PressKey("right"),
+						Actions.Up => () => KeyOutputManager.PressKey("up"),
+						Actions.Down => () => KeyOutputManager.PressKey("down"),
+
+						Actions.Back => () => KeyOutputManager.PressKey("escape"),
+
+						Actions.VolumeUp => () => SoundManager.VolumeUp(),
+						Actions.VolumeDown => () => SoundManager.VolumeDown(),
+
+						Actions.OpenOSK => () => KeyOutputManager.OpenOnScreenKeyboard(),
+
+						Actions.None => null,
+						_ => null
 					};
+
+					keymap.Add(gamepadButton, assignedAction); // add to dict
 				}
 				catch (System.ArgumentException)
 				{
@@ -112,60 +131,43 @@ namespace C2M
 			// handle generic stuff
 			Move(state);
 			Scroll(state);
-			HandleTriggers(state);
+				
+			// every so many frames
+			if (framecounter % 5 == 0)
+            {
+				HandleTriggers(state);
+			}
+			
 
-			// hot AF key inputs and that
-			foreach (KeyValuePair<GamepadButtonFlags, Task> input in keymap)
+			// loop over keymap, if key in keymap is down -> execute action
+			foreach (KeyValuePair<GamepadButtonFlags, Action> control in keymap)
 			{
-				// check if key is valid
-				bool isKeyDown = state.Gamepad.Buttons.HasFlag(input.Key);
+				var input = control.Key;
+				var action = control.Value;
+				bool isKeyDown = state.Gamepad.Buttons.HasFlag(input);
 
-				if (isKeyDown && !lastKeysDown.Contains(input.Key))
+				if (isKeyDown && !lastKeysDown.Contains(input))
 				{
-					lastKeysDown.Add(input.Key);
-
-					// normal operations
-					if (input.Key == GamepadButtonFlags.A) mouse.LeftButtonDown();
-					else if (input.Key == GamepadButtonFlags.B) KeyOutputManager.PressKey("escape");
-					else if (input.Key == GamepadButtonFlags.X) mouse.RightButtonClick();
-					else if (input.Key == GamepadButtonFlags.Y) KeyOutputManager.OpenOnScreenKeyboard();
-
-					// movement arraows
-					else if (input.Key == GamepadButtonFlags.DPadLeft) KeyOutputManager.PressKey("left");
-					else if (input.Key == GamepadButtonFlags.DPadRight) KeyOutputManager.PressKey("right");
-					else if (input.Key == GamepadButtonFlags.DPadUp) KeyOutputManager.PressKey("up");
-					else if (input.Key == GamepadButtonFlags.DPadDown) KeyOutputManager.PressKey("down");
-
-					// idk lol
-					// else if (input.Key == GamepadButtonFlags.LeftShoulder) KeyOutputManager.PressKey("control");
-					// else if (input.Key == GamepadButtonFlags.RightShoulder) KeyOutputManager.PressKeyCombination("ctrl+=");
-
-					// volume
-					else if (input.Key == GamepadButtonFlags.Back) SoundManager.VolumeDown();
-					else if (input.Key == GamepadButtonFlags.Start) SoundManager.VolumeUp();
-				}
-				else if (!isKeyDown && lastKeysDown.Contains(input.Key))
+					lastKeysDown.Add(input);
+					action.Invoke();
+                }
+				else if (!isKeyDown && lastKeysDown.Contains(input))
 				{
 					mouse.LeftButtonUp();
-					lastKeysDown.Remove(input.Key);
+					lastKeysDown.Remove(input);
 				}
 			}
+
+			framecounter++;
 		}
 
-		private ushort counter = 0;
 		private void HandleTriggers(State state)
 		{
-			counter++;
-			if (counter <= 5)
-				return;
-
 			if (state.Gamepad.LeftTrigger > Gamepad.TriggerThreshold && state.Gamepad.RightTrigger <= Gamepad.TriggerThreshold)
 				KeyOutputManager.PressKeyCombination("control+subtract");
 
 			else if (state.Gamepad.RightTrigger > Gamepad.TriggerThreshold && state.Gamepad.LeftTrigger <= Gamepad.TriggerThreshold)
 				KeyOutputManager.PressKeyCombination("control+add");
-
-			counter = 0;
 		}
 	}
 }

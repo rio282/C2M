@@ -1,22 +1,21 @@
 A = LeftClick
 B = Back
 X = RightClick
-Y = None
+Y = OpenOSK
 
 LeftThumb = Movement
 RightThumb = Scroll
-HomeButton = Exit
 
-DPadLeft = MoveCaretLeft
-DPadRight = MoveCaretRight
-DPadUp = None
-DPadDown = None
+DPadLeft = Left
+DPadRight = Right
+DPadUp = Up
+DPadDown = Down
 
-Start = None
-Back = None
+Start = VolumeUp
+Back = VolumeDown
 
 LeftShoulder = None
 RightShoulder = None
 
-LeftTrigger = None
-RightTrigger = None
+LeftTrigger = ZoomOut
+RightTrigger = ZoomIn
