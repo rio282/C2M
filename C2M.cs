@@ -10,6 +10,7 @@ namespace C2M
 	{
 		private readonly Controller controller;
 		private readonly IMouseSimulator mouse;
+		private readonly IKeyboardSimulator keyboard;
 		private readonly ControllerHandler controllerHandler;
 
 		private Timer frameTimer;
@@ -19,7 +20,8 @@ namespace C2M
 		{
 			controller = new Controller(UserIndex.One);
 			mouse = new InputSimulator().Mouse;
-			controllerHandler = new ControllerHandler(this, controller, mouse);
+			keyboard = new InputSimulator().Keyboard;
+			controllerHandler = new ControllerHandler(this, controller, mouse, keyboard);
 		}
 
 		private void Update()

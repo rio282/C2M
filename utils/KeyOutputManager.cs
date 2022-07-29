@@ -10,23 +10,23 @@ namespace C2M.utils
 	class KeyOutputManager
 	{
 
-		private readonly InputSimulator inputSimulator;
+		private readonly IKeyboardSimulator keyboard;
 
-		public KeyOutputManager()
+		public KeyOutputManager(IKeyboardSimulator keyboard)
 		{
-			inputSimulator = new InputSimulator();
+			this.keyboard = keyboard;
 		}
 
 		public void PressKey(string key)
 		{
 			if (key.Length == 1 && !int.TryParse(key, out _))
 				key = $"VK_{key}";
-			inputSimulator.Keyboard.KeyPress(Utilities.ParseEnum<VirtualKeyCode>(key));
+			keyboard.KeyPress(Utilities.ParseEnum<VirtualKeyCode>(key));
 		}
 
 		public void PressKeyByCode(int keycode)
 		{
-			inputSimulator.Keyboard.KeyPress((VirtualKeyCode)keycode);
+			keyboard.KeyPress((VirtualKeyCode)keycode);
 		}
 
 		public void PressKeyCombination(string combo)
@@ -39,7 +39,7 @@ namespace C2M.utils
 				string key = key_str;
 				if (key.Length == 1 && !int.TryParse(key, out _))
 					key = $"VK_{key}";
-				inputSimulator.Keyboard.KeyDown(Utilities.ParseEnum<VirtualKeyCode>(key));
+				keyboard.KeyDown(Utilities.ParseEnum<VirtualKeyCode>(key));
 			}
 
 			// reverse array
@@ -50,7 +50,7 @@ namespace C2M.utils
 				string key = key_str;
 				if (key.Length == 1 && !int.TryParse(key, out _))
 					key = $"VK_{key}";
-				inputSimulator.Keyboard.KeyUp(Utilities.ParseEnum<VirtualKeyCode>(key));
+				keyboard.KeyUp(Utilities.ParseEnum<VirtualKeyCode>(key));
 			}
 		}
 

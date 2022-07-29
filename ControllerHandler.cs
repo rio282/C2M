@@ -16,9 +16,10 @@ namespace C2M
 		private const string KeymapFile = "default.keymap";
 
 		private readonly C2M c2m;
-		private readonly IMouseSimulator mouse;
 		private readonly Controller controller;
-		private readonly KeyOutputManager keyOutputManager;
+		private readonly IMouseSimulator mouse;
+		private readonly IKeyboardSimulator keyboard;
+	
 
 		private const int CTMovementDivisionRate = 2_000;
 		private const int CTScrollDivisionRate = 10_000;
@@ -26,15 +27,18 @@ namespace C2M
 		private readonly TaskScheduler ts;
 		private IDictionary<GamepadButtonFlags, Action> keymap;
 		private List<GamepadButtonFlags> lastKeysDown;
-
 		private ushort framecounter = 0;
 
-		public ControllerHandler(C2M c2m, Controller controller, IMouseSimulator mouse)
+		private readonly KeyOutputManager keyOutputManager;
+
+		
+		public ControllerHandler(C2M c2m, Controller controller, IMouseSimulator mouse, IKeyboardSimulator keyboard)
 		{
 			this.c2m = c2m;
 			this.controller = controller;
 			this.mouse = mouse;
-			keyOutputManager = new KeyOutputManager();
+			this.keyboard = keyboard;
+			keyOutputManager = new KeyOutputManager(keyboard);
 
 			// create task scheduler
 			SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());

@@ -3,9 +3,6 @@ B = Back
 X = RightClick
 Y = OpenOSK
 
-LeftThumb = Movement
-RightThumb = Scroll
-
 DPadLeft = Left
 DPadRight = Right
 DPadUp = Up
