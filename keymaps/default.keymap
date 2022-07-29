@@ -11,8 +11,8 @@ DPadDown = Down
 Start = VolumeUp
 Back = VolumeDown
 
-LeftShoulder = None
-RightShoulder = None
+LeftShoulder = AltTab
+RightShoulder = Enter
 
 LeftTrigger = ZoomOut
 RightTrigger = ZoomIn

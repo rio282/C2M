@@ -99,6 +99,8 @@ namespace C2M
 						Actions.VolumeDown => () => SoundManager.VolumeDown(),
 
 						Actions.OpenOSK => () => keyOutputManager.OpenOnScreenKeyboard(),
+						Actions.AltTab => () => keyOutputManager.PressKeyCombination("menu+tab"),
+						Actions.Enter => () => keyOutputManager.PressKey("return"),
 
 						Actions.None => null,
 						_ => null

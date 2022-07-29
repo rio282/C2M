@@ -26,6 +26,8 @@ namespace C2M
 		ZoomIn = 12,
 		ZoomOut = 13,
 
-		OpenOSK = 14
+		OpenOSK = 14,
+		AltTab = 15,
+		Enter = 16
 	}
 }
