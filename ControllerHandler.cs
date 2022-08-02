@@ -22,7 +22,7 @@ namespace C2M
 	
 
 		private const int CTMovementDivisionRate = 2_000;
-		private const int CTScrollDivisionRate = 10_000;
+		private const int CTScrollDivisionRate = 8_000;
 
 		private readonly TaskScheduler ts;
 		private IDictionary<GamepadButtonFlags, Action> keymap;
@@ -72,11 +72,12 @@ namespace C2M
 			while ((line = streamReader.ReadLine()) != null)
 			{
 				line = line.Replace(" ", "");
-				if (line.Split("=").Length < 2)
+				var split = line.Split("=");
+				if (split.Length < 2)
 					continue;
 
-				string input = line.Split("=")[0];
-				string action = line.Split("=")[1].Replace("=", "");
+				string input = split[0];
+				string action = split[1].Replace("=", "");
 
 				try
 				{
@@ -129,19 +130,18 @@ namespace C2M
 			var y = state.Gamepad.RightThumbY / CTScrollDivisionRate;
 
 			mouse.HorizontalScroll(x);
-			mouse.VerticalScroll(y >> 1);
+			mouse.VerticalScroll(y);
 		}
 
 		internal void Handle(State state)
 		{
 			// handle generic stuff
 			Move(state);
-			Scroll(state);
 			if (framecounter % 5 == 0)
             {
+				Scroll(state);
 				HandleTriggers(state);
 			}
-			
 
 			// loop over keymap, if key in keymap is down -> execute action
 			foreach (KeyValuePair<GamepadButtonFlags, Action> control in keymap)
